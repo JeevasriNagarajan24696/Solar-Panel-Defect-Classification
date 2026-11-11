@@ -1,0 +1,5 @@
+Model,Test Accuracy (%),Test Loss
+Baseline CNN,42.0168,1.4113
+Augmented CNN,34.4538,1.7613
+Optimized CNN,35.2941,1.5899
+MobileNetV2,67.22689270973206,0.9064288139343262
