@@ -8,16 +8,17 @@
 
 Solar panels are exposed to environmental conditions such as dust, snow, and bird droppings, as well as physical and electrical damage. These conditions can affect solar-panel performance and create maintenance challenges.
 
-This project investigates the use of Convolutional Neural Networks (CNNs) to classify solar-panel images into six categories. The objective is to develop a baseline CNN, evaluate its performance, and investigate techniques for improving classification accuracy.
+This project investigates Convolutional Neural Networks (CNNs) and transfer learning for classifying solar-panel images into six categories. Four deep learning models were developed and evaluated to compare their classification performance.
 
 ## 2. Project Objectives
 
 - Develop a CNN-based solar-panel image classification system.
-- Prepare and clean an existing publicly available dataset.
+- Prepare and preprocess a publicly available image dataset.
 - Train and evaluate a baseline CNN.
-- Analyze training and validation accuracy and loss.
-- Investigate improvements through data augmentation and training optimization.
-- Compare the baseline CNN with a transfer-learning approach.
+- Investigate data augmentation and training optimization.
+- Apply transfer learning using MobileNetV2.
+- Compare four models using validation and test performance.
+- Analyze classification reports and confusion matrices.
 
 ## 3. Dataset
 
@@ -32,35 +33,12 @@ The dataset contains six image categories:
 5. Physical-Damage
 6. Snow-Covered
 
-### Dataset Preparation
+Images were resized to 224 × 224 pixels and prepared for CNN training, validation, and testing.
 
-The original dataset contained 885 readable images.
-
-During preprocessing:
-
-- Exact duplicate images were identified using SHA-256 hashing.
-- 91 extra duplicate copies were detected.
-- Two groups containing conflicting class labels were excluded.
-- The final cleaned dataset contained 792 images.
-
-### Dataset Split
-
-| Dataset | Number of Images |
-|---|---:|
-| Training | 554 |
-| Validation | 119 |
-| Testing | 119 |
-| **Total** | **792** |
-
-A stratified 70/15/15 split was used to maintain approximately similar class proportions across the datasets.
-
-Images were resized to 224 × 224 pixels using aspect-ratio-preserving padding and normalized to the range 0–1.
-
-## 4. Tools and Technologies
+## 4. Technologies Used
 
 - Python
-- TensorFlow
-- Keras
+- TensorFlow and Keras
 - Google Colab
 - NumPy
 - Pandas
@@ -68,80 +46,100 @@ Images were resized to 224 × 224 pixels using aspect-ratio-preserving padding a
 - Scikit-learn
 - GitHub
 
-## 5. Baseline CNN Architecture
+## 5. Model Development
 
-The baseline model uses:
+Four deep learning experiments were conducted.
 
-- Three convolutional layers with ReLU activation
-- Three max-pooling layers
-- Global average pooling
-- A fully connected layer with 64 neurons
-- A softmax output layer for six-class classification
+### Experiment 1: Baseline CNN
 
-**Total trainable parameters:** 101,894
+A CNN model was developed using convolutional layers, max-pooling layers, global average pooling, and dense layers.
 
-### Training Configuration
+The baseline CNN served as the reference model for evaluating subsequent improvements.
 
-| Parameter | Value |
-|---|---|
-| Optimizer | Adam |
-| Learning rate | 0.001 |
-| Loss function | Sparse Categorical Cross-Entropy |
-| Batch size | 32 |
-| Epochs | 15 |
-| Input image size | 224 × 224 × 3 |
+**Test Accuracy:** 42.02%  
+**Test Loss:** 1.4113
 
-## 6. Baseline CNN Results
+### Experiment 2: CNN with Data Augmentation
 
-The baseline CNN was trained for 15 epochs.
+Data augmentation was incorporated into the CNN training pipeline to investigate whether image transformations could improve generalization.
 
-| Evaluation Metric | Result |
-|---|---:|
-| Final training accuracy | 45.85% |
-| Final validation accuracy | 42.86% |
-| Highest validation accuracy | 49.58% |
-| Final training loss | 1.3986 |
-| Final validation loss | 1.3930 |
+**Test Accuracy:** 34.45%  
+**Test Loss:** 1.7613
 
-### Observations
+Data augmentation did not improve test accuracy compared with the baseline CNN in this experiment.
 
-- Training accuracy generally increased during the 15 epochs.
-- Training loss decreased overall.
-- Validation accuracy and loss fluctuated.
-- The baseline model demonstrated some learning capability, but classification accuracy remained limited.
-- The results suggest possible underfitting rather than clear, sustained overfitting.
+### Experiment 3: Optimized CNN
 
-These results establish a reference for evaluating subsequent improvements.
+The third experiment incorporated dropout and training adjustments to investigate potential improvements in classification performance.
 
-## 7. Planned Experiments
+**Test Accuracy:** 35.29%  
+**Test Loss:** 1.5899
 
-The following experiments will be investigated:
+The optimized CNN did not outperform the baseline CNN.
 
-| Experiment | Approach | Status |
-|---|---|---|
-| 1 | Baseline CNN | Completed |
-| 2 | CNN with Data Augmentation | Planned |
-| 3 | CNN with Training Optimization | Planned |
-| 4 | MobileNetV2 Transfer Learning | Planned |
+### Experiment 4: MobileNetV2 Transfer Learning
 
-The experiments will be compared using classification metrics and learning curves.
+A transfer-learning model was developed using MobileNetV2 with pretrained ImageNet weights.
 
-## 8. Project Files
+The pretrained feature-extraction layers were frozen, and new classification layers were added for the six solar-panel categories.
 
-**Solar_Panel_Defect_Classification.ipynb**
+**Test Accuracy:** 67.23%  
+**Test Loss:** 0.9064
 
-The Google Colab notebook contains the dataset preparation, preprocessing, baseline CNN implementation, training, and learning-curve visualizations.
+MobileNetV2 achieved the highest test accuracy among the four models.
 
-## 9. Future Work
+## 6. Final Model Comparison
 
-- Implement data augmentation.
-- Investigate learning-rate and training improvements.
-- Train and evaluate MobileNetV2.
-- Compare model performance using accuracy, precision, recall, F1-score, and confusion matrices.
-- Evaluate the selected final model using the held-out test dataset.
+| Model | Test Accuracy (%) | Test Loss |
+|---|---:|---:|
+| Baseline CNN | 42.02 | 1.4113 |
+| Augmented CNN | 34.45 | 1.7613 |
+| Optimized CNN | 35.29 | 1.5899 |
+| **MobileNetV2** | **67.23** | **0.9064** |
 
-## 10. Project Status
+**Best Performing Model: MobileNetV2**
 
-**Current stage:** Baseline CNN training and validation analysis completed.
+MobileNetV2 improved test accuracy by approximately 25.21 percentage points compared with the baseline CNN.
 
-Further experiments and final evaluation are in progress.
+## 7. Classification Performance
+
+The classification performance of the models was evaluated using:
+
+- Accuracy
+- Precision
+- Recall
+- F1-score
+- Confusion matrix
+
+The MobileNetV2 model correctly classified 13 out of 14 Electrical-damage images, achieving 92.86% recall for that category.
+
+Dusty and Physical-Damage images remained more challenging to classify.
+
+## 8. Key Findings
+
+1. The baseline CNN achieved 42.02% test accuracy.
+2. Data augmentation did not improve test accuracy in the second experiment.
+3. The optimized CNN achieved 35.29% test accuracy.
+4. MobileNetV2 achieved the highest test accuracy of 67.23%.
+5. Transfer learning substantially improved classification performance compared with the custom CNN models.
+6. Some categories remained challenging because of classification errors between visually similar conditions.
+
+## 9. Future Improvements
+
+Potential future improvements include:
+
+- Increasing the number of training images.
+- Addressing class imbalance.
+- Fine-tuning selected pretrained MobileNetV2 layers.
+- Investigating additional image preprocessing methods.
+- Evaluating other transfer-learning architectures.
+
+## 10. Conclusion
+
+This project investigated CNN-based solar-panel defect classification using four deep learning experiments.
+
+The results demonstrated that MobileNetV2 outperformed the three custom CNN models, achieving 67.23% test accuracy and 0.9064 test loss.
+
+Although the transfer-learning approach improved overall classification performance, challenges remained in identifying certain defect categories.
+
+Overall, the project demonstrates the potential of transfer learning for automated solar-panel condition monitoring.
